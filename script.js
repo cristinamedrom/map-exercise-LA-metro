@@ -7,8 +7,9 @@ var map = new mapboxgl.Map({
     zoom: 10,
 });
 
+
 fetch('https://api.metro.net/LACMTA/vehicle_positions/all')
-    .then((response) =>{
+    .then((response) => {
         if (!response.ok) {
             throw new Error('No se pudo procesar la solicitud.')
         }
@@ -16,7 +17,18 @@ fetch('https://api.metro.net/LACMTA/vehicle_positions/all')
     })
 
     .then((data) => {
-    
+
+        data.forEach((vagon) => {
+            const coordenadas = vagon.geometry.coordinates;
+            const vehiculoID = vagon.vehicle.vehicle_id;
+
+            new mapboxgl.Marker({ color: 'black'})
+                .setLngLat(coordenadas)
+                .setPopup(new mapboxgl.Popup().setHTML(`ID del Vehículo: ${vehiculoID}`))
+                .addTo(map);
+                
+        });
+
     })
 
     .catch((error) => {
